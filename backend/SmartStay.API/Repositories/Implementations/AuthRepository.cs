@@ -131,7 +131,7 @@ namespace SmartStay.API.Repositories.Implementations
             );
         }
 
-        public async Task<ProfileResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        public async Task<ProfileResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto, string? profileImagePath)
         {
             using var conn = Connection;
 
@@ -144,7 +144,7 @@ namespace SmartStay.API.Repositories.Implementations
                     dto.PhoneNumber,
                     dto.DateOfBirth,
                     dto.Address,
-                    ProfileImage = dto.ProfileImage?.FileName
+                    ProfileImage = profileImagePath
                 },
                 commandType: CommandType.StoredProcedure
             );

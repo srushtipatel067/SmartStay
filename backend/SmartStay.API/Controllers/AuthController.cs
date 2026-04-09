@@ -201,7 +201,27 @@ namespace SmartStay.API.Controllers
                     return BadRequest(ApiResponse<object>.Fail("Profile image size must not exceed 2 MB."));
             }
 
-            var result = await _authRepository.UpdateProfileAsync(userId, dto);
+            string? profileImagePath = null;
+
+            // Save uploaded image locally and store relative path
+            if (dto.ProfileImage != null)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "profile-images");
+
+                // Create unique file name to avoid overwrite conflicts
+                var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.ProfileImage.FileName).ToLowerInvariant()}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await dto.ProfileImage.CopyToAsync(stream);
+                }
+
+                // Save relative path in DB, not absolute local machine path
+                profileImagePath = $"/profile-images/{uniqueFileName}";
+            }
+
+            var result = await _authRepository.UpdateProfileAsync(userId, dto, profileImagePath);
 
             if (result == null)
                 return BadRequest(ApiResponse<object>.Fail("Profile update failed"));

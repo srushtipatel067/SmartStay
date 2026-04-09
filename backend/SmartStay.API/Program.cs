@@ -113,6 +113,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//enable static files - for images
+app.UseStaticFiles();
+
 // Enable auth middleware
 app.UseAuthentication();
 app.UseAuthorization();

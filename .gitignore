@@ -407,7 +407,7 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
-# Built Visual Studio Code Extensions
+# Built Visual Studio Code Extension
 *.vsix
 
 # Windows Installer files from build outputs
@@ -416,3 +416,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+#uploaded images stay local
+#folder structure stays in git
+backend/SmartStay.API/wwwroot/profile-images/*
+!backend/SmartStay.API/wwwroot/profile-images/.gitkeep
