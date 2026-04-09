@@ -166,14 +166,40 @@ namespace SmartStay.API.Controllers
             int userId = int.Parse(userIdClaim);
 
             // Optional practical trimming for text fields
-            if (!string.IsNullOrWhiteSpace(dto.FullName))
+            if (dto.FullName != null)
                 dto.FullName = dto.FullName.Trim();
 
-            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+            if (dto.PhoneNumber != null)
                 dto.PhoneNumber = dto.PhoneNumber.Trim();
 
-            if (!string.IsNullOrWhiteSpace(dto.Address))
+            if (dto.Address != null)
                 dto.Address = dto.Address.Trim();
+
+            //Reject completely empty update request
+            if (IsProfileUpdateEmpty(dto))
+                return BadRequest(ApiResponse<object>.Fail("At least one field is required to update profile."));
+
+            //Prevent meaningless full name like only spaces
+            if (dto.FullName != null && string.IsNullOrWhiteSpace(dto.FullName))
+                return BadRequest(ApiResponse<object>.Fail("Full name cannot be empty."));
+
+            //Real-world DOB check
+            if (dto.DateOfBirth.HasValue && dto.DateOfBirth.Value.Date > DateTime.Today)
+                return BadRequest(ApiResponse<object>.Fail("Date of birth cannot be in the future."));
+
+            //Reuse flexible phone validation
+            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber) && !IsValidPhoneNumber(dto.PhoneNumber))
+                return BadRequest(ApiResponse<object>.Fail("Enter a valid phone number."));
+
+            // Basic real-world image validation
+            if (dto.ProfileImage != null)
+            {
+                if (!IsValidProfileImage(dto.ProfileImage))
+                    return BadRequest(ApiResponse<object>.Fail("Only .jpg, .jpeg, .png, and .webp image files are allowed."));
+
+                if (dto.ProfileImage.Length > 2 * 1024 * 1024)
+                    return BadRequest(ApiResponse<object>.Fail("Profile image size must not exceed 2 MB."));
+            }
 
             var result = await _authRepository.UpdateProfileAsync(userId, dto);
 
@@ -214,6 +240,27 @@ namespace SmartStay.API.Controllers
             string digitsOnly = new string(phoneNumber.Where(char.IsDigit).ToArray());
 
             return digitsOnly.Length >= 8 && digitsOnly.Length <= 15;
+        }
+
+        // Checks whether user actually sent any profile field to update
+        private bool IsProfileUpdateEmpty(UpdateProfileDto dto)
+        {
+            return string.IsNullOrWhiteSpace(dto.FullName)
+                && string.IsNullOrWhiteSpace(dto.PhoneNumber)
+                && !dto.DateOfBirth.HasValue
+                && string.IsNullOrWhiteSpace(dto.Address)
+                && dto.ProfileImage == null;
+        }
+
+        // Validates common safe image formats for profile upload
+        private bool IsValidProfileImage(IFormFile file)
+        {
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var allowedContentTypes = new[] { "image/jpg", "image/jpeg", "image/png", "image/webp" };
+
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+            return allowedExtensions.Contains(extension) && allowedContentTypes.Contains(file.ContentType.ToLowerInvariant());
         }
     }
 }
