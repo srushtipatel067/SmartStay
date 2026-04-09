@@ -15,6 +15,6 @@ namespace SmartStay.API.DTOs.Auth
         [StringLength(250)]
         public string? Address { get; set; }
 
-        public string? ProfileImage { get; set; }
+        public IFormFile? ProfileImage { get; set; }
     }
 }
