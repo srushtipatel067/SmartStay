@@ -175,10 +175,8 @@ namespace SmartStay.API.Controllers
             // Read logged-in user id from JWT token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim))
-                return Unauthorized(ApiResponse<object>.Fail("Invalid token"));
-
-            int userId = int.Parse(userIdClaim);
+            if (!int.TryParse(userIdClaim, out int userId))
+                return Unauthorized(ApiResponse<object>.Fail("Invalid token."));
 
             var result = await _authRepository.GetProfileAsync(userId);
 
@@ -194,13 +192,11 @@ namespace SmartStay.API.Controllers
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim))
-                return Unauthorized(ApiResponse<object>.Fail("Invalid token"));
+            if (!int.TryParse(userIdClaim, out int userId))
+                return Unauthorized(ApiResponse<object>.Fail("Invalid token."));
 
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<object>.Fail("Validation failed", ModelState));
-
-            int userId = int.Parse(userIdClaim);
 
             // Optional practical trimming for text fields
             if (dto.FullName != null)
@@ -212,19 +208,19 @@ namespace SmartStay.API.Controllers
             if (dto.Address != null)
                 dto.Address = dto.Address.Trim();
 
-            //Reject completely empty update request
+            // Reject completely empty update request
             if (IsProfileUpdateEmpty(dto))
                 return BadRequest(ApiResponse<object>.Fail("At least one field is required to update profile."));
 
-            //Prevent meaningless full name like only spaces
+            // Prevent meaningless full name like only spaces
             if (dto.FullName != null && string.IsNullOrWhiteSpace(dto.FullName))
                 return BadRequest(ApiResponse<object>.Fail("Full name cannot be empty."));
 
-            //Real-world DOB check
+            // Real-world DOB check
             if (dto.DateOfBirth.HasValue && dto.DateOfBirth.Value.Date > DateTime.Today)
                 return BadRequest(ApiResponse<object>.Fail("Date of birth cannot be in the future."));
 
-            //Reuse flexible phone validation
+            // Reuse flexible phone validation
             if (!string.IsNullOrWhiteSpace(dto.PhoneNumber) && !IsValidPhoneNumber(dto.PhoneNumber))
                 return BadRequest(ApiResponse<object>.Fail("Enter a valid phone number."));
 
@@ -244,6 +240,10 @@ namespace SmartStay.API.Controllers
             if (dto.ProfileImage != null)
             {
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "profile-images");
+
+                //create folder if it doesn't exist, to avoid runtime errors on first upload
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
 
                 // Create unique file name to avoid overwrite conflicts
                 var uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(dto.ProfileImage.FileName).ToLowerInvariant()}";
