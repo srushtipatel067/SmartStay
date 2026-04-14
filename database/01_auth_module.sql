@@ -22,7 +22,10 @@ CREATE TABLE tbl_Users
     OtpExpiry DATETIME NULL,
 
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    UpdatedAt DATETIME NULL
+    UpdatedAt DATETIME NULL,
+
+    IsOtpVerified BIT NOT NULL DEFAULT 0,
+    OtpVerifiedAt DATETIME NULL
 );
 GO
 
@@ -90,6 +93,7 @@ BEGIN
 END
 GO
 
+
 ------------sp_User_ForgotPassword---------------
 CREATE OR ALTER PROCEDURE sp_User_ForgotPassword
     @Email NVARCHAR(100)
@@ -120,10 +124,44 @@ BEGIN
 END
 GO
 
+------------sp_User_VerifyOtp----------------
+CREATE OR ALTER PROCEDURE sp_User_VerifyOtp
+    @Email NVARCHAR(100),
+    @OtpCode NVARCHAR(10)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM tbl_Users
+        WHERE Email = @Email
+          AND OtpCode = @OtpCode
+          AND OtpExpiry >= GETDATE()
+    )
+    BEGIN
+        UPDATE tbl_Users
+        SET
+            OtpCode = NULL,
+            OtpExpiry = NULL,
+            IsOtpVerified = 1,
+            OtpVerifiedAt = GETDATE(),
+            UpdatedAt = GETDATE()
+        WHERE Email = @Email;
+
+        SELECT 1 AS Success, 'OTP verified successfully' AS Message;
+    END
+    ELSE
+    BEGIN
+        SELECT 0 AS Success, 'Invalid or expired OTP' AS Message;
+    END
+END
+GO
+
 -----------sp_User_ResetPassword-------------
 CREATE OR ALTER PROCEDURE sp_User_ResetPassword
     @Email NVARCHAR(100),
-    @OtpCode NVARCHAR(10),
     @NewPasswordHash NVARCHAR(255)
 AS
 BEGIN
@@ -134,19 +172,19 @@ BEGIN
         SELECT 1
         FROM tbl_Users
         WHERE Email = @Email
-          AND OtpCode = @OtpCode
-          AND OtpExpiry >= GETDATE()
+          AND IsOtpVerified = 1
+          AND OtpVerifiedAt >= DATEADD(MINUTE, -5, GETDATE())
     )
     BEGIN
-        SELECT 0 AS Success, 'Invalid or expired OTP' AS Message;
+        SELECT 0 AS Success, 'OTP not verified or verification expired' AS Message;
         RETURN;
     END
 
     UPDATE tbl_Users
-    SET 
+    SET
         PasswordHash = @NewPasswordHash,
-        OtpCode = NULL,
-        OtpExpiry = NULL,
+        IsOtpVerified = 0,
+        OtpVerifiedAt = NULL,
         UpdatedAt = GETDATE()
     WHERE Email = @Email;
 

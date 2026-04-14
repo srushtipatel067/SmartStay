@@ -8,6 +8,7 @@ namespace SmartStay.API.Repositories.Interfaces
         Task<User?> RegisterAsync(RegisterRequestDto dto);
         Task<AuthResponseDto?> LoginAsync(LoginRequestDto dto);
         Task<bool> ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task<bool> VerifyOtpAsync(string email, string otpCode);
         Task<bool> ResetPasswordAsync(ResetPasswordDto dto);
         Task<ProfileResponseDto?> GetProfileAsync(int userId);
         Task<ProfileResponseDto?> UpdateProfileAsync(int userId, UpdateProfileDto dto, string? profileImagePath);

@@ -8,9 +8,6 @@ namespace SmartStay.API.DTOs.Auth
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        [Required]
-        public string OtpCode { get; set; } = string.Empty;
-
         [Required(ErrorMessage = "New password is required.")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
         [StringLength(50)]

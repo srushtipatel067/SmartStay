@@ -97,6 +97,25 @@ namespace SmartStay.API.Repositories.Implementations
             return true;
         }
 
+        public async Task<bool> VerifyOtpAsync(string email, string otpCode)
+        {
+            using var conn = Connection;
+
+            var result = await conn.QueryFirstOrDefaultAsync<dynamic>(
+                "sp_User_VerifyOtp",
+                new
+                {
+                    Email = email,
+                    OtpCode = otpCode
+                },
+                commandType: CommandType.StoredProcedure
+            );
+
+            if (result == null || result.Success == 0)
+                return false;
+
+            return true;
+        }
         public async Task<bool> ResetPasswordAsync(ResetPasswordDto dto)
         {
             using var conn = Connection;
@@ -108,7 +127,6 @@ namespace SmartStay.API.Repositories.Implementations
                 new
                 {
                     dto.Email,
-                    dto.OtpCode,
                     NewPasswordHash = hashedPassword
                 },
                 commandType: CommandType.StoredProcedure

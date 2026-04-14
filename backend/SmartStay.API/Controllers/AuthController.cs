@@ -103,9 +103,9 @@ namespace SmartStay.API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<object>.Fail("Validation failed", ModelState));
 
-            dto.Email = dto.Email.Trim().ToLower();
+            dto.Email = dto.Email.Trim().ToLowerInvariant();
 
-            var success = await _authRepository.ForgotPasswordAsync(dto);
+            await _authRepository.ForgotPasswordAsync(dto);
 
             // Same response for both cases to avoid email existence leak
             return Ok(ApiResponse<object>.Ok(
@@ -114,21 +114,58 @@ namespace SmartStay.API.Controllers
             ));
         }
 
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ApiResponse<object>.Fail("Validation failed", ModelState));
+
+            dto.Email = dto.Email.Trim().ToLowerInvariant();
+            dto.OtpCode = dto.OtpCode.Trim();
+
+            if (string.IsNullOrWhiteSpace(dto.OtpCode))
+                return BadRequest(ApiResponse<object>.Fail("OTP is required."));
+
+            var isValid = await _authRepository.VerifyOtpAsync(dto.Email, dto.OtpCode);
+
+            if (!isValid)
+                return BadRequest(ApiResponse<object>.Fail("Invalid or expired OTP."));
+
+            return Ok(ApiResponse<object>.Ok(null, "OTP verified successfully."));
+        }
+
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ApiResponse<object>.Fail("Validation failed", ModelState));
 
-            dto.Email = dto.Email.Trim().ToLower();
-            dto.OtpCode = dto.OtpCode.Trim();
+            dto.Email = dto.Email.Trim().ToLowerInvariant();
+            dto.NewPassword = dto.NewPassword.Trim();
+            dto.ConfirmPassword = dto.ConfirmPassword.Trim();
+
+            // hidden protection against unrealistic long password payloads
+            if (dto.NewPassword.Length > 50)
+                return BadRequest(ApiResponse<object>.Fail("Password is too long."));
+
+            // reuse same real-world password policy
+            if (!IsValidPassword(dto.NewPassword))
+            {
+                return BadRequest(ApiResponse<object>.Fail(
+                    "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character."
+                ));
+            }
+
+            // compare again after trim, because [Compare] runs before your manual trim
+            if (dto.NewPassword != dto.ConfirmPassword)
+                return BadRequest(ApiResponse<object>.Fail("Password and confirm password do not match."));
 
             var success = await _authRepository.ResetPasswordAsync(dto);
 
             if (!success)
-                return BadRequest(ApiResponse<object>.Fail("Invalid or expired OTP"));
+                return BadRequest(ApiResponse<object>.Fail("OTP not verified or verification expired."));
 
-            return Ok(ApiResponse<object>.Ok(null, "Password reset successfully"));
+            return Ok(ApiResponse<object>.Ok(null, "Password reset successfully."));
         }
 
         [Authorize]
