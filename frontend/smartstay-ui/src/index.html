@@ -1,0 +1,254 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark smartstay-navbar px-3 px-lg-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold fs-3" href="#">SmartStay</a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar"
+      aria-controls="mainNavbar"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Hotels</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Offers</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+        <li class="nav-item">
+          <a class="btn btn-outline-light ms-lg-3 me-lg-2 mt-2 mt-lg-0" href="#">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn btn-warning text-dark fw-semibold mt-2 mt-lg-0" href="#">Register</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content text-center">
+      <h1 class="hero-title fw-bold mb-3">
+        Discover Comfortable Stays for Every Journey
+      </h1>
+      <p class="hero-subtitle mx-auto mb-4">
+        Explore hotels, compare offers, and book your next stay with ease through SmartStay.
+      </p>
+
+      <div class="hero-actions d-flex justify-content-center flex-wrap gap-3 mb-5">
+        <a href="#" class="btn btn-warning btn-lg text-dark fw-semibold px-4">Explore Hotels</a>
+        <a href="#" class="btn btn-outline-light btn-lg px-4">View Offers</a>
+      </div>
+    </div>
+
+    <!-- Search Box Center -->
+    <div class="search-wrapper">
+      <div class="search-card shadow-lg">
+        <div class="row g-3 align-items-end">
+          <div class="col-lg-3 col-md-6">
+            <label class="form-label fw-semibold">Destination</label>
+            <input type="text" class="form-control form-control-lg" placeholder="City or hotel name">
+          </div>
+
+          <div class="col-lg-2 col-md-6">
+            <label class="form-label fw-semibold">Check-In</label>
+            <input type="date" class="form-control form-control-lg">
+          </div>
+
+          <div class="col-lg-2 col-md-6">
+            <label class="form-label fw-semibold">Check-Out</label>
+            <input type="date" class="form-control form-control-lg">
+          </div>
+
+          <div class="col-lg-2 col-md-6">
+            <label class="form-label fw-semibold">Guests</label>
+            <select class="form-select form-select-lg">
+              <option selected>2 Guests</option>
+              <option>1 Guest</option>
+              <option>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4 Guests</option>
+            </select>
+          </div>
+
+          <div class="col-lg-1 col-md-6">
+            <label class="form-label fw-semibold">Rooms</label>
+            <select class="form-select form-select-lg">
+              <option selected>1</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+            </select>
+          </div>
+
+          <div class="col-lg-2 col-md-6 d-grid">
+            <button class="btn btn-dark btn-lg">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Hotels -->
+<section class="py-5 section-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Featured Hotels</h2>
+      <p class="text-muted mb-0">Handpicked stays for comfort, style, and convenience.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card hotel-card h-100 border-0 shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top hotel-img"
+            alt="Luxury hotel"
+          >
+          <div class="card-body">
+            <h5 class="card-title fw-bold">Smart Luxury Palace</h5>
+            <p class="text-muted mb-2">Mumbai, India</p>
+            <p class="card-text">
+              Premium city-view rooms with modern comfort, fine dining, and elegant hospitality.
+            </p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="fw-bold text-primary">₹6,500 / night</span>
+              <a href="#" class="btn btn-outline-dark btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="card hotel-card h-100 border-0 shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top hotel-img"
+            alt="Resort hotel"
+          >
+          <div class="card-body">
+            <h5 class="card-title fw-bold">Ocean Pearl Resort</h5>
+            <p class="text-muted mb-2">Goa, India</p>
+            <p class="card-text">
+              A refreshing beachside experience with beautiful rooms, pool access, and family comfort.
+            </p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="fw-bold text-primary">₹8,200 / night</span>
+              <a href="#" class="btn btn-outline-dark btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="card hotel-card h-100 border-0 shadow-sm">
+          <img
+            src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1200&q=80"
+            class="card-img-top hotel-img"
+            alt="Business hotel"
+          >
+          <div class="card-body">
+            <h5 class="card-title fw-bold">Urban Nest Suites</h5>
+            <p class="text-muted mb-2">Bangalore, India</p>
+            <p class="card-text">
+              Smart rooms and modern facilities designed for business trips and comfortable short stays.
+            </p>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <span class="fw-bold text-primary">₹5,400 / night</span>
+              <a href="#" class="btn btn-outline-dark btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Offers -->
+<section class="py-5 offers-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Special Offers</h2>
+      <p class="text-muted mb-0">Save more with exclusive SmartStay deals.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="offer-box primary-offer h-100">
+          <p class="small text-uppercase fw-bold mb-2">Weekend Deal</p>
+          <h3 class="fw-bold mb-3">Get up to 25% off on weekend bookings</h3>
+          <p class="mb-4">
+            Enjoy special savings on selected hotels and make your short trips more affordable.
+          </p>
+          <a href="#" class="btn btn-light fw-semibold">Explore Deals</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="offer-box secondary-offer h-100">
+          <p class="small text-uppercase fw-bold mb-2">Member Perk</p>
+          <h3 class="fw-bold mb-3">Free breakfast on selected premium stays</h3>
+          <p class="mb-4">
+            Sign up to unlock extra value, better pricing, and smoother booking experiences.
+          </p>
+          <a href="#" class="btn btn-dark fw-semibold">Join Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="smartstay-footer pt-5 pb-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h4 class="fw-bold mb-3">SmartStay</h4>
+        <p class="footer-text">
+          Your trusted platform for discovering hotels, comparing stays, and booking with confidence.
+        </p>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="fw-bold mb-3">Company</h6>
+        <ul class="list-unstyled footer-list">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Hotels</a></li>
+          <li><a href="#">Offers</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <h6 class="fw-bold mb-3">Support</h6>
+        <ul class="list-unstyled footer-list">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Booking Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3">
+        <h6 class="fw-bold mb-3">Contact</h6>
+        <p class="footer-text mb-1">support@smartstay.com</p>
+        <p class="footer-text mb-0">+91 98765 43210</p>
+      </div>
+    </div>
+
+    <hr class="footer-divider my-4">
+
+    <div class="text-center footer-copy">
+      © 2026 SmartStay. All rights reserved.
+    </div>
+  </div>
+</footer>

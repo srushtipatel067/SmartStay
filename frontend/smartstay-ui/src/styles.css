@@ -1,0 +1,169 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.smartstay-navbar {
+  background: linear-gradient(90deg, #0d1b2a, #1b263b);
+}
+
+.navbar-brand {
+  letter-spacing: 0.5px;
+}
+
+.hero-section {
+  min-height: 92vh;
+  background:
+    linear-gradient(rgba(13, 27, 42, 0.55), rgba(13, 27, 42, 0.82)),
+    url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  padding: 70px 0 90px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-badge {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.35);
+  padding: 10px 16px;
+}
+
+.highlight-text {
+  color: #ffc107;
+}
+
+.hero-text {
+  max-width: 560px;
+}
+
+.hero-content {
+  text-align: center;
+  color: #ffffff;
+  max-width: 850px;
+  margin: 0 auto 40px;
+}
+
+.hero-content h1 {
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 18px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.30);
+}
+
+.hero-content p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.08rem;
+  margin-bottom: 0;
+}
+
+.search-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.search-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+}
+
+.search-card .form-control,
+.search-card .form-select,
+.search-card .btn {
+  border-radius: 12px;
+}
+
+.section-light {
+  background: #ffffff;
+}
+
+.hotel-card {
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.hotel-card:hover {
+  transform: translateY(-6px);
+}
+
+.hotel-img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.offers-section {
+  background: #f1f5f9;
+}
+
+.offer-box {
+  border-radius: 20px;
+  padding: 32px;
+  height: 100%;
+}
+
+.primary-offer {
+  background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+  color: white;
+}
+
+.secondary-offer {
+  background: linear-gradient(135deg, #ffc107, #ffca2c);
+  color: #212529;
+}
+
+.smartstay-footer {
+  background: #0d1b2a;
+  color: #ffffff;
+}
+
+.text-footer {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #ffc107;
+}
+
+@media (max-width: 991px) {
+  .hero-section {
+    min-height: auto;
+    padding: 50px 0;
+  }
+
+  .search-card {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .search-card {
+    padding: 18px;
+  }
+
+  .offer-box {
+    padding: 24px;
+  }
+}
