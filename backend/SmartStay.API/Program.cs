@@ -72,6 +72,9 @@ builder.Services.AddSwaggerGen(options =>
 // Register custom helpers + repositories
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Read JWT settings from appsettings
 var jwtKey = builder.Configuration["Jwt:Key"]!;

@@ -410,6 +410,12 @@ FodyWeavers.xsd
 # Built Visual Studio Code Extension
 *.vsix
 
+//confidential 
+bin/
+obj/
+node_modules/
+.env
+
 # Windows Installer files from build outputs
 *.cab
 *.msi

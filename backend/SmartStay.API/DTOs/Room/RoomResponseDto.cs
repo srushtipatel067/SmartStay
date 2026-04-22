@@ -1,0 +1,22 @@
+﻿namespace SmartStay.API.DTOs.Room
+{
+    public class RoomResponseDto
+    {
+        public int RoomId { get; set; }
+        public int HotelId { get; set; }
+        public string? HotelName { get; set; }
+
+        public string RoomType { get; set; }
+        public string? Description { get; set; }
+
+        public decimal PricePerNight { get; set; }
+        public int MaxAdults { get; set; }
+        public int MaxChildren { get; set; }
+
+        public int TotalRooms { get; set; }
+        public int AvailableRooms { get; set; }
+
+        public string? ThumbnailImageUrl { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

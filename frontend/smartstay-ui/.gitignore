@@ -2,6 +2,12 @@
 
 .vscode/
 
+# Confidential 
+bin/
+obj/
+node_modules/
+.env
+
 # Compiled output
 /dist
 /tmp
