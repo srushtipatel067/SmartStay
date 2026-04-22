@@ -383,3 +383,58 @@ BEGIN
     ORDER BY CreatedAt DESC;
 END;
 GO
+
+
+/* =========================
+   SP: check availability of rooms
+   ========================= */
+GO
+CREATE OR ALTER PROCEDURE sp_Room_CheckAvailability
+(
+    @RoomId INT,
+    @CheckInDate DATE,
+    @CheckOutDate DATE
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @CheckInDate >= @CheckOutDate
+    BEGIN
+        SELECT 0 AS Success, 'Invalid date range' AS Message;
+        RETURN;
+    END
+
+    DECLARE @TotalRooms INT;
+
+    SELECT @TotalRooms = TotalRooms
+    FROM tbl_Rooms
+    WHERE RoomId = @RoomId AND IsDeleted = 0;
+
+    IF @TotalRooms IS NULL
+    BEGIN
+        SELECT 0 AS Success, 'Room not found' AS Message;
+        RETURN;
+    END
+
+    DECLARE @BookedRooms INT;
+
+    SELECT @BookedRooms = ISNULL(SUM(b.RoomsBooked), 0)
+    FROM tbl_Bookings b
+    WHERE b.RoomId = @RoomId
+      AND b.BookingStatus != 'Cancelled'
+      AND (
+            @CheckInDate < b.CheckOutDate
+        AND @CheckOutDate > b.CheckInDate
+      );
+
+    DECLARE @AvailableRooms INT = @TotalRooms - @BookedRooms;
+
+    SELECT 
+        1 AS Success,
+        @RoomId AS RoomId,
+        @TotalRooms AS TotalRooms,
+        @BookedRooms AS BookedRooms,
+        @AvailableRooms AS AvailableRooms,
+        CASE WHEN @AvailableRooms > 0 THEN 1 ELSE 0 END AS IsAvailable;
+END;

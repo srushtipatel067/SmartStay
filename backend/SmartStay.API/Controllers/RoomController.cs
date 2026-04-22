@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SmartStay.API.DTOs.Common;
 using SmartStay.API.DTOs.Room;
 using SmartStay.API.Repositories.Interfaces;
 using System.Security.Claims;
@@ -73,6 +74,25 @@ namespace SmartStay.API.Controllers
             var rooms = await _roomRepository.GetByHotelIdAsync(hotelId);
 
             return Ok(rooms);
+        }
+
+        // CHECK AVAILABILITY
+        [HttpGet("{roomId}/availability")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CheckAvailability(
+            int roomId,
+            DateTime checkIn,
+            DateTime checkOut)
+        {
+            if (checkIn >= checkOut)
+                return BadRequest(ApiResponse<object>.Fail("Invalid date range"));
+
+            var result = await _roomRepository.CheckAvailabilityAsync(roomId, checkIn, checkOut);
+
+            if (result == null)
+                return NotFound(ApiResponse<object>.Fail("Room not found"));
+
+            return Ok(ApiResponse<object>.Ok(result, "Availability fetched"));
         }
 
         // UPDATE ROOM

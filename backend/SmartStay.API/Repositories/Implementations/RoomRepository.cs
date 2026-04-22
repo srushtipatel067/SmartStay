@@ -81,6 +81,35 @@ namespace SmartStay.API.Repositories.Implementations
             );
         }
 
+        // CHECK AVAILABILITY
+        public async Task<RoomAvailabilityDto?> CheckAvailabilityAsync(int roomId, DateTime checkIn, DateTime checkOut)
+        {
+            using var conn = Connection;
+
+            var result = await conn.QueryFirstOrDefaultAsync<dynamic>(
+                "sp_Room_CheckAvailability",
+                new
+                {
+                    RoomId = roomId,
+                    CheckInDate = checkIn,
+                    CheckOutDate = checkOut
+                },
+                commandType: CommandType.StoredProcedure
+            );
+
+            if (result == null || result.Success == 0)
+                return null;
+
+            return new RoomAvailabilityDto
+            {
+                RoomId = result.RoomId,
+                TotalRooms = result.TotalRooms,
+                BookedRooms = result.BookedRooms,
+                AvailableRooms = result.AvailableRooms,
+                IsAvailable = result.IsAvailable == 1
+            };
+        }
+
         // UPDATE
         public async Task<bool> UpdateAsync(UpdateRoomDto dto, int updatedBy)
         {

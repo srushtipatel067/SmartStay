@@ -154,6 +154,12 @@ namespace SmartStay.API.Controllers
                 errors[key].Add(message);
             }
 
+            if (dto.CheckInDate.Date < DateTime.Now.Date) // check-in cannot be in the past
+                AddError("checkInDate", "Check-in date cannot be in the past");
+
+            if (dto.CheckInDate.Date == DateTime.Now.Date && DateTime.Now.Hour >= 18) // same-day booking not allowed after 6 PM
+                AddError("checkInDate", "Same-day booking not allowed after 6 PM");
+
             if (dto.CheckInDate >= dto.CheckOutDate)
                 AddError("date", "Invalid date range");
 

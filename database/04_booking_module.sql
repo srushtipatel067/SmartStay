@@ -80,6 +80,16 @@ BEGIN
         RETURN;
     END
 
+    -- Prevent past booking
+    -- check in date can not be in past
+    DECLARE @Today DATE = CAST(GETDATE() AS DATE);    
+
+    IF @CheckInDate < @Today
+    BEGIN
+        SELECT 0 AS Success, 'Check-in date cannot be in the past' AS Message;
+        RETURN;
+    END
+
     -- Validate room
     IF NOT EXISTS (SELECT 1 FROM tbl_Rooms WHERE RoomId=@RoomId AND IsDeleted=0)
     BEGIN
