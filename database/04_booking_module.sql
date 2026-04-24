@@ -165,6 +165,14 @@ CREATE OR ALTER PROCEDURE sp_Booking_GetByUser
 )
 AS
 BEGIN
+    -- Auto complete past bookings
+    UPDATE tbl_Bookings
+    SET BookingStatus = 'Completed',
+        PaymentStatus = 'Paid'
+    WHERE BookingStatus = 'Confirmed'
+    AND PaymentStatus = 'Paid'
+    AND CheckOutDate < CAST(GETDATE() AS DATE);
+    
     SELECT *
     FROM tbl_Bookings
     WHERE UserId = @UserId
@@ -183,6 +191,7 @@ CREATE OR ALTER PROCEDURE sp_Booking_GetByGuest
 )
 AS
 BEGIN
+
     SELECT *
     FROM tbl_Bookings
     WHERE GuestEmail = @GuestEmail
@@ -201,6 +210,20 @@ BEGIN
     SELECT *
     FROM tbl_Bookings
     ORDER BY CreatedAt DESC;
+END;
+
+
+/* =========================
+   SP: Auto Complete booking 
+   ========================= */
+GO
+CREATE OR ALTER PROCEDURE sp_Booking_AutoComplete
+AS
+BEGIN
+    UPDATE tbl_Bookings
+    SET BookingStatus = 'Completed'
+    WHERE BookingStatus = 'Confirmed'
+    AND CheckOutDate < CAST(GETDATE() AS DATE);
 END;
 
 

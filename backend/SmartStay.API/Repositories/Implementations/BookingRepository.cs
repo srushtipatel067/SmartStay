@@ -48,6 +48,10 @@ namespace SmartStay.API.Repositories.Implementations
         {
             using var conn = Connection;
 
+            // Step 1: auto update
+            await conn.ExecuteAsync("sp_Booking_AutoComplete", commandType: CommandType.StoredProcedure);
+
+            // Step 2: fetch data
             return await conn.QueryAsync(
                 "sp_Booking_GetAll",
                 commandType: CommandType.StoredProcedure
@@ -58,6 +62,10 @@ namespace SmartStay.API.Repositories.Implementations
         {
             using var conn = Connection;
 
+            // Step 1: auto update
+            await conn.ExecuteAsync("sp_Booking_AutoComplete", commandType: CommandType.StoredProcedure);
+
+            // Step 2: fetch user data
             return await conn.QueryAsync(
                 "sp_Booking_GetByUser",
                 new 
