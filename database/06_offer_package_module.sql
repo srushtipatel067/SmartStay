@@ -100,7 +100,7 @@ BEGIN
     SELECT *
     FROM tbl_Offers
     WHERE IsActive = 1
-    AND GETDATE() BETWEEN StartDate AND EndDate
+    AND CAST(GETDATE() AS DATE) BETWEEN StartDate AND EndDate
     ORDER BY CreatedAt DESC;
 END;
 
@@ -143,5 +143,5 @@ BEGIN
     FROM tbl_Packages
     WHERE HotelId = @HotelId
     AND IsActive = 1
-    AND GETDATE() BETWEEN StartDate AND EndDate;
+    AND CAST(GETDATE() AS DATE) BETWEEN StartDate AND EndDate
 END;

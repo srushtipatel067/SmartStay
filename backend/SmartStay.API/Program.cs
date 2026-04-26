@@ -11,6 +11,19 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS setup to allow Angular frontend to call the API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // Add controllers
 builder.Services.AddControllers();
 
@@ -110,6 +123,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Enable CORS
+app.UseCors("AllowFrontend");
 
 // Swagger only in development
 if (app.Environment.IsDevelopment())

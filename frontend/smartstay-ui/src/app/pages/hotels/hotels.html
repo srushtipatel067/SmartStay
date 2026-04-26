@@ -1,10 +1,30 @@
 <div class="container py-5">
-  <h2 class="fw-bold mb-3">Hotels</h2>
-  <p class="text-muted mb-4">
-    Browse all available hotels and find the perfect stay for your trip.
-  </p>
+  <h2 class="fw-bold mb-4">Hotels</h2>
 
-  <div class="alert alert-info">
-    Hotel listing UI will be implemented here.
+  <!-- LOADING -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border"></div>
+  </div>
+
+  <!-- DATA -->
+  <div class="row g-4" *ngIf="!loading">
+    <div class="col-md-6 col-lg-4" *ngFor="let hotel of hotels">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="fw-bold">{{ hotel.hotelName }}</h5>
+          <p class="text-muted">{{ hotel.city }}</p>
+          <p>{{ hotel.description }}</p>
+
+          <button class="btn btn-dark btn-sm">
+            View Rooms
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY -->
+  <div *ngIf="!loading && hotels.length === 0" class="alert alert-info">
+    No hotels found.
   </div>
 </div>
