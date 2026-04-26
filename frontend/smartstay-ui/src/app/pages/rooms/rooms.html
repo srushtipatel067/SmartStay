@@ -1,0 +1,41 @@
+<div class="container py-5">
+  <h2 class="fw-bold mb-4">Rooms</h2>
+
+  <!-- LOADING -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border"></div>
+  </div>
+
+  <!-- DATA -->
+  <div class="row g-4" *ngIf="!loading">
+    <div class="col-md-6 col-lg-4" *ngFor="let room of rooms">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="fw-bold">{{ room.roomType }}</h5>
+          <p class="text-muted">₹{{ room.pricePerNight }} / night</p>
+
+          <p>
+            Adults: {{ room.maxAdults }} |
+            Children: {{ room.maxChildren }}
+          </p>
+
+          <p>
+            Available: {{ room.availableRooms }}
+          </p>
+
+        <a
+            class="btn btn-dark btn-sm"
+            [routerLink]="['/booking', room.roomId]"
+        >
+            Book Now
+        </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMPTY -->
+  <div *ngIf="!loading && rooms.length === 0" class="alert alert-info">
+    No rooms available.
+  </div>
+</div>

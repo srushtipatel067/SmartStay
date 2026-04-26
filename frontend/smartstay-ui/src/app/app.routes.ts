@@ -15,5 +15,15 @@ export const routes: Routes = [
     path: 'offers',
     loadComponent: () =>
       import('./pages/offers/offers').then(m => m.Offers)
+  }, 
+  {
+    path: 'rooms/:hotelId',
+    loadComponent: () =>
+      import('./pages/rooms/rooms').then(m => m.Rooms)
+  }, 
+  {
+    path: 'booking/:roomId',
+    loadComponent: () =>
+      import('./pages/booking/booking').then(m => m.Booking)
   }
 ];

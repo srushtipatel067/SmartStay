@@ -1,11 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router'; 
 import { HotelService } from '../../services/hotel.service';
 
 @Component({
   selector: 'app-hotels',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './hotels.html',
   styleUrl: './hotels.css',
 })

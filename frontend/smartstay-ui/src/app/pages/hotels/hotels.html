@@ -15,9 +15,12 @@
           <p class="text-muted">{{ hotel.city }}</p>
           <p>{{ hotel.description }}</p>
 
-          <button class="btn btn-dark btn-sm">
+          <a
+            class="btn btn-dark btn-sm"
+            [routerLink]="['/rooms', hotel.hotelId]"
+          >
             View Rooms
-          </button>
+          </a>
         </div>
       </div>
     </div>
