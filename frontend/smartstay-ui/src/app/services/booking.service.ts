@@ -14,4 +14,10 @@ export class BookingService {
   createBooking(data: any): Observable<any> {
     return this.http.post(this.baseUrl, data);
   }
+
+  getMyBookings(email: string, phone: string) {
+  return this.http.get(
+    `${this.baseUrl}/guest-bookings?email=${email}&phone=${phone}`
+  );
+  }
 }

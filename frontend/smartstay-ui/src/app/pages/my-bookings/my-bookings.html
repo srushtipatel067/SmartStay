@@ -1,0 +1,58 @@
+<div class="card p-3 mb-4 shadow-sm">
+  <h5 class="fw-bold mb-3">Find Your Booking</h5>
+
+  <div class="row g-2">
+    <div class="col-md-4">
+      <input type="email" class="form-control"
+             placeholder="Email"
+             [(ngModel)]="guestEmail">
+    </div>
+
+    <div class="col-md-4">
+      <input type="text" class="form-control"
+             placeholder="Phone"
+             [(ngModel)]="guestPhone">
+    </div>
+
+    <div class="col-md-4 d-grid">
+      <button class="btn btn-dark" (click)="fetchBookings()">
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <h2 class="fw-bold mb-4">My Bookings</h2>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border"></div>
+  </div>
+
+  <!-- No Data -->
+  <div *ngIf="!loading && bookings.length === 0" class="alert alert-info">
+    No bookings found.
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- List -->
+  <div class="row g-4" *ngIf="!loading && bookings.length > 0">
+    <div class="col-md-6" *ngFor="let b of bookings">
+      <div class="card p-3 shadow-sm">
+
+        <h5 class="fw-bold">Room ID: {{ b.RoomId }}</h5>
+
+        <p><strong>Check-In:</strong> {{ b.CheckInDate }}</p>
+        
+        <p><strong>Check-Out:</strong> {{ b.CheckOutDate }}</p>
+        
+        <p><strong>Status:</strong> {{ b.BookingStatus }}</p>
+
+      </div>
+    </div>
+  </div>
+</div>
