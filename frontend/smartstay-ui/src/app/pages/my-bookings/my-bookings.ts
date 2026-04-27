@@ -52,7 +52,24 @@ export class MyBookings implements OnInit {
       this.cdr.detectChanges(); // force UI refresh
     }
   });
-}
+  }
+
+  cancelBooking(id: number) {
+
+  if (!confirm("Are you sure you want to cancel this booking?")) {
+    return;
+  }
+
+  this.bookingService.cancelBooking(id).subscribe({
+    next: () => {
+      this.fetchBookings(); // refresh list
+    },
+    error: (err) => {
+      alert(err.error?.message || "Cancel failed");
+    }
+  });
+  }
+
   ngOnInit(): void {}
 }
 

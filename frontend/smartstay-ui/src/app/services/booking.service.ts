@@ -16,8 +16,12 @@ export class BookingService {
   }
 
   getMyBookings(email: string, phone: string) {
-  return this.http.get(
-    `${this.baseUrl}/guest-bookings?email=${email}&phone=${phone}`
+    return this.http.get(
+      `${this.baseUrl}/guest-bookings?email=${email}&phone=${phone}`
   );
+  }
+
+  cancelBooking(id: number) {
+    return this.http.put(`${this.baseUrl}/${id}/cancel`, {});
   }
 }

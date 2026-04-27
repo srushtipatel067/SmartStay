@@ -1,0 +1,62 @@
+<div class="container py-5" style="max-width: 400px;">
+  <h3 class="fw-bold mb-4 text-center">Register</h3>
+
+    <input type="text"
+         class="form-control mb-3"
+         placeholder="Full Name"
+         [(ngModel)]="name">
+
+    <input type="email"
+         class="form-control mb-3"
+         placeholder="Email"
+         [(ngModel)]="email">
+
+    <div class="position-relative mb-3">
+
+    <input [type]="showPassword ? 'text' : 'password'"
+         class="form-control pe-5"
+         placeholder="Password"
+         [(ngModel)]="password">
+
+    <i class="bi"
+     [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+     (click)="showPassword = !showPassword"
+     style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
+    </i>
+
+    </div>
+
+    <div class="position-relative mb-3">
+
+    <input [type]="showConfirmPassword ? 'text' : 'password'"
+         class="form-control pe-5"
+         placeholder="Confirm Password"
+         [(ngModel)]="confirmPassword">
+
+    <i class="bi"
+     [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"
+     (click)="showConfirmPassword = !showConfirmPassword"
+     style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
+    </i>
+
+    </div>
+
+    <input type="text"
+       class="form-control mb-3"
+       placeholder="Phone Number"
+       [(ngModel)]="phoneNumber">
+
+    <button class="btn btn-dark w-100"
+          (click)="register()"
+          [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Register' }}
+    </button>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+    </div>
+</div>

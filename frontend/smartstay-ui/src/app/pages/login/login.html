@@ -1,0 +1,47 @@
+<div class="container py-5" style="max-width: 400px;">
+  <h3 class="fw-bold mb-4 text-center">Login</h3>
+
+    <input type="email"
+       class="form-control mb-3"
+       placeholder="Email"
+       [(ngModel)]="email">
+
+    <div class="position-relative mb-3">
+
+    <input [type]="showPassword ? 'text' : 'password'"
+         class="form-control pe-5"
+         placeholder="Password"
+         [(ngModel)]="password">
+
+    <i class="bi"
+     [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
+     (click)="showPassword = !showPassword"
+     style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer;">
+    </i>
+
+    </div>
+
+    <div class="text-danger mt-1" *ngIf="password && password.length < 8">
+        Password must be at least 8 characters
+    </div>
+
+    <div *ngIf="loading" class="text-center mb-2">
+        <small>Checking credentials...</small>
+    </div>
+
+    <button class="btn btn-dark w-100" (click)="login()" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
+
+    <div class="text-center mt-3">
+        <a routerLink="/register">Create new account</a>
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+        {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+    </div>
+</div>
