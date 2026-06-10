@@ -12,11 +12,21 @@
 
     <!-- LOGGED IN -->
     <ng-template #loggedInBlock>
+
+      <button (click)="logout()">Logout</button>
+
+      <a routerLink="/profile" class="profile-circle" title="Profile">
+        <img *ngIf="profileImageUrl; else initialBlock" [src]="profileImageUrl" alt="Profile">
+
+        <ng-template #initialBlock>
+          <span>{{ getUserInitial() }}</span>
+        </ng-template>
+      </a>
+
       <a *ngIf="isLoggedIn && auth.getUserRole() === 'Admin'" routerLink="/admin">
         Admin
       </a>
-      <a routerLink="/my-bookings">My Bookings</a>
-      <button (click)="logout()">Logout</button>
+
     </ng-template>
 
   </div>

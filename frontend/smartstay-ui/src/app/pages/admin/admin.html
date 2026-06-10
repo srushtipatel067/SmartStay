@@ -162,16 +162,22 @@
         {{ hotelMessage }}
     </div>
 
-    <div class="mt-5" *ngIf="showRooms">
+    <div class="section-card mt-5" *ngIf="showRooms">
         <h4 class="mb-3">Manage Rooms</h4>
 
         <div class="row mb-4">
             <div class="col-md-6">
                 <label class="form-label">Select Hotel</label>
 
-                <select class="form-select" [(ngModel)]="selectedHotelId" (change)="loadRoomsByHotel()">
+                <select 
+                    class="form-select" 
+                    *ngIf="hotels.length > 0" 
+                    [(ngModel)]="selectedHotelId"
+                    (change)="loadRoomsByHotel()">
 
-                    <option [ngValue]="0">Select hotel</option>
+                    <option [ngValue]="0">
+                        {{ hotelsLoading ? 'Loading hotels...' : 'Select hotel' }}
+                    </option>
 
                     <option *ngFor="let h of hotels" [ngValue]="h.hotelId">
                         {{ h.hotelName }} - {{ h.city }}
@@ -268,9 +274,8 @@
                         <td>{{ r.totalRooms }}</td>
                         <td>{{ r.availableRooms }}</td>
                         <td>
-                            <button class="btn btn-sm btn-outline-dark me-2"
-                                (click)="editRoom(r)">
-                                    Edit
+                            <button class="btn btn-sm btn-outline-dark me-2" (click)="editRoom(r)">
+                                Edit
                             </button>
 
                             <button class="btn btn-sm btn-danger" (click)="removeRoom(r.roomId)">
@@ -287,7 +292,7 @@
         </div>
     </div>
 
-    <div class="mt-5" *ngIf="showHotels">
+    <div class="section-card mt-5" *ngIf="showHotels">
         <h4 class="mb-3">Manage Hotels</h4>
 
         <div class="table-responsive">
@@ -333,7 +338,7 @@
         </div>
     </div>
 
-    <div class="mt-5" *ngIf="bookingView !== 'none' && !showHotelForm && !showHotels">
+    <div class="section-card mt-5" *ngIf="bookingView !== 'none' && !showHotelForm && !showHotels && !showRooms">
         <h4 class="mb-3">
             {{ bookingView === 'all' ? 'All Bookings' : 'Recent Bookings' }}
             ({{ getCurrentBookings().length }})
@@ -379,10 +384,10 @@
                         <!-- BOOKING STATUS -->
                         <td>
                             <span class="badge" [ngClass]="{
-                                'bg-success': b.bookingStatus === 'Confirmed',
-                                'bg-warning text-dark': b.bookingStatus === 'Pending',
-                                'bg-danger': b.bookingStatus === 'Cancelled',
-                                'bg-primary': b.bookingStatus === 'Completed'
+                                'badge-confirmed': b.bookingStatus === 'Confirmed',
+                                'badge-pending': b.bookingStatus === 'Pending',
+                                'badge-cancelled': b.bookingStatus === 'Cancelled',
+                                'badge-completed': b.bookingStatus === 'Completed'
                                 }">
                                 {{ b.bookingStatus }}
                             </span>
@@ -391,15 +396,15 @@
                         <!-- BOOKING ACTION -->
                         <td>
 
-                            <button class="btn btn-sm btn-success me-2"
-                                *ngIf="b.bookingStatus !== 'Cancelled' && b.bookingStatus !== 'Completed'"
+                            <button class="btn btn-sm btn-success me-2" *ngIf="b.bookingStatus === 'Pending'"
                                 [disabled]="b.bookingStatus === 'Confirmed' || updatingId === b.bookingId"
                                 (click)="updateStatus(b.bookingId, 'Confirmed')">
                                 Confirm
                             </button>
 
-                            <button class="btn btn-sm btn-danger" *ngIf="b.bookingStatus !== 'Cancelled' 
-                                && b.bookingStatus !== 'Completed'" [disabled]="updatingId === b.bookingId"
+                            <button class="btn btn-sm btn-danger"
+                                *ngIf="b.bookingStatus === 'Pending' || b.bookingStatus === 'Confirmed'"
+                                [disabled]="updatingId === b.bookingId"
                                 (click)="updateStatus(b.bookingId, 'Cancelled')">
                                 Cancel
                             </button>
@@ -409,16 +414,15 @@
                         <!-- PAYMENT STATUS -->
                         <td>
                             <span class="badge" [ngClass]="{
-                                'bg-success': b.paymentStatus === 'Paid',
-                                'bg-warning text-dark': b.paymentStatus === 'Pending',
-                                'bg-info text-dark': b.paymentStatus === 'Refunded'
+                                'badge-paid': b.paymentStatus === 'Paid',
+                                'badge-pending': b.paymentStatus === 'Pending'
                                 }">
                                 {{ b.paymentStatus }}
                             </span>
                         </td>
 
                         <!-- PAYMENT ACTION -->
-                        <td *ngIf="b.bookingStatus !== 'Completed'; else noPaymentAction">
+                        <td *ngIf="b.paymentStatus !== 'Paid' && b.bookingStatus !== 'Cancelled'; else noPaymentAction">
 
                             <select class="form-select form-select-sm" [disabled]="updatingId === b.bookingId"
                                 (change)="updatePayment(b.bookingId, $any($event.target).value)">

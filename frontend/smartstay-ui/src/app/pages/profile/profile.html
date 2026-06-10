@@ -1,0 +1,533 @@
+<div class="container mt-5" *ngIf="user">
+
+    <h3 class="mb-2">My Profile</h3>
+    <p class="text-muted mb-4">Manage your personal details and bookings</p>
+
+    <div class="card p-4 shadow-sm">
+
+        <!-- Profile Image -->
+        <div class="profile-hero text-center mb-4">
+
+            <div class="profile-image-wrapper" (click)="openImagePreview()">
+
+                <img *ngIf="previewImage; else existingImage" [src]="previewImage" class="profile-preview">
+
+                <ng-template #existingImage>
+                    <img *ngIf="user.profileImage" [src]="'https://localhost:7094' + user.profileImage"
+                        class="profile-preview">
+                </ng-template>
+
+                <div class="profile-overlay">
+                    <small>View</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Tabs -->
+        <div class="d-flex mb-4 gap-3 align-items-center">
+
+            <!-- TAB BUTTONS -->
+            <button class="btn" [ngClass]="activeTab === 'profile' ? 'btn-dark' : 'btn-outline-dark'"
+                (click)="activeTab = 'profile'">
+                Profile Info
+            </button>
+
+            <button class="btn" [ngClass]="activeTab === 'bookings' ? 'btn-dark' : 'btn-outline-dark'"
+                (click)="loadMyBookings()">
+                My Bookings
+            </button>
+
+            <!-- FILTER (only show in bookings) -->
+            <div *ngIf="activeTab === 'bookings'" class="ms-auto d-flex gap-2">
+
+                <button class="btn btn-sm" [ngClass]="selectedStatus === 'All' ? 'btn-dark' : 'btn-outline-dark'"
+                    (click)="selectedStatus='All'; applyFilter()">
+                    All
+                </button>
+
+                <button class="btn btn-sm" [ngClass]="selectedStatus === 'Confirmed' ? 'btn-dark' : 'btn-outline-dark'"
+                    (click)="selectedStatus='Confirmed'; applyFilter()">
+                    Confirmed
+                </button>
+
+                <button class="btn btn-sm" [ngClass]="selectedStatus === 'Completed' ? 'btn-dark' : 'btn-outline-dark'"
+                    (click)="selectedStatus='Completed'; applyFilter()">
+                    Completed
+                </button>
+
+                <button class="btn btn-sm" [ngClass]="selectedStatus === 'Cancelled' ? 'btn-dark' : 'btn-outline-dark'"
+                    (click)="selectedStatus='Cancelled'; applyFilter()">
+                    Cancelled
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- PROFILE VIEW -->
+        <div *ngIf="activeTab === 'profile' && !isEditMode">
+
+
+
+            <div class="profile-info-card">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <div>
+                        <h3 class="profile-name mb-0">{{ user.fullName }}</h3>
+                        <small class="text-muted">SmartStay Member</small>
+                    </div>
+
+                    <button class="btn btn-dark" (click)="isEditMode = true">
+                        Edit Profile
+                    </button>
+
+                </div>
+
+                <div class="profile-info-grid">
+
+                    <div class="profile-info-box">
+                        <small>Email</small>
+                        <strong>{{ user.email }}</strong>
+                    </div>
+
+                    <div class="profile-info-box">
+                        <small>Phone</small>
+                        <strong>{{ user.phoneNumber }}</strong>
+                    </div>
+
+                    <div class="profile-info-box">
+                        <small>Date of Birth</small>
+                        <strong>{{ user.dateOfBirth }}</strong>
+                    </div>
+
+                    <div class="profile-info-box">
+                        <small>Address</small>
+                        <strong>{{ user.address }}</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- EDIT PROFILE FORM -->
+        <div *ngIf="activeTab === 'profile' && isEditMode">
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Full Name</label>
+                    <input class="form-control" [(ngModel)]="user.fullName">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Email (readonly)</label>
+                    <input class="form-control" [value]="user.email" disabled>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label>Phone</label>
+                    <input class="form-control" [(ngModel)]="user.phoneNumber">
+                </div>
+
+                <div class="col-md-6">
+                    <label>Date of Birth</label>
+                    <input type="date" class="form-control" [(ngModel)]="user.dateOfBirth">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Address</label>
+                <textarea class="form-control" [(ngModel)]="user.address"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label>Profile Image</label>
+                <input type="file" class="form-control" (change)="onFileChange($event)">
+            </div>
+
+            <button class="btn btn-dark w-100" (click)="saveProfile()" [disabled]="loading">
+                {{ loading ? 'Saving...' : 'Update Profile' }}
+            </button>
+
+            <button class="btn btn-outline-secondary w-100 mt-2" (click)="isEditMode = false">
+                Cancel
+            </button>
+
+        </div>
+
+        <!-- BOOKINGS -->
+        <div *ngIf="activeTab === 'bookings'">
+
+            <div *ngIf="bookingLoading" class="skeleton-table">
+
+                <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+                    <div class="skeleton-cell short"></div>
+                    <div class="skeleton-cell"></div>
+                    <div class="skeleton-cell"></div>
+                    <div class="skeleton-cell long"></div>
+                    <div class="skeleton-cell"></div>
+                    <div class="skeleton-cell"></div>
+                    <div class="skeleton-cell short"></div>
+                </div>
+
+            </div>
+
+            <table *ngIf="!bookingLoading" class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>No.</th>
+                        <th>Hotel</th>
+                        <th>Room</th>
+                        <th>Dates</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let b of pagedBookings; let i = index">
+                        <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                        <td>
+                            <strong>{{ b.hotelName }}</strong><br>
+                            <small class="text-muted">{{ b.city }}, {{ b.state }}</small>
+                        </td>
+                        <td>{{ b.roomType }}</td>
+
+                        <td>
+                            {{ b.checkInDate | date:'dd MMM yyyy' }}
+                            →
+                            {{ b.checkOutDate | date:'dd MMM yyyy' }}
+                        </td>
+
+                        <td>
+                            <span class="badge px-3 py-2" [ngClass]="{
+                                'badge-confirmed': b.bookingStatus === 'Confirmed',
+                                'badge-completed': b.bookingStatus === 'Completed',
+                                'badge-cancelled': b.bookingStatus === 'Cancelled',
+                                'badge-pending': b.bookingStatus === 'Pending'
+                                }">
+                                {{ b.bookingStatus }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge px-3 py-2" [ngClass]="{
+                                'badge-paid': b.paymentStatus === 'Paid',
+                                'badge-pending': b.paymentStatus === 'Pending'
+                                }">
+                                {{ b.paymentStatus }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-sm btn-primary me-2" (click)="openBookingDetails(b)">
+                                View
+                            </button>
+
+                            <button *ngIf="b.bookingStatus !== 'Cancelled' && b.paymentStatus !== 'Paid'"
+                                class="btn btn-sm btn-danger" (click)="cancelBooking(b.bookingId)">
+                                Cancel
+                            </button>
+
+                            <span *ngIf="b.bookingStatus === 'Cancelled'" class="text-muted">
+                                Cancelled
+                            </span>
+
+                            <span *ngIf="b.paymentStatus === 'Paid' && b.bookingStatus !== 'Cancelled'"
+                                class="text-success">
+                                No Action
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="filteredBookings.length === 0">
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            No bookings found for this filter.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-end align-items-center gap-2 mt-3"
+                *ngIf="filteredBookings.length > pageSize">
+
+                <button class="btn btn-sm btn-outline-dark" [disabled]="currentPage === 1"
+                    (click)="changePage(currentPage - 1)">
+                    Previous
+                </button>
+
+                <span>
+                    Page {{ currentPage }} of {{ totalPages }}
+                </span>
+
+                <button class="btn btn-sm btn-outline-dark" [disabled]="currentPage === totalPages"
+                    (click)="changePage(currentPage + 1)">
+                    Next
+                </button>
+
+            </div>
+        </div>
+
+        <!-- MESSAGE -->
+        <div *ngIf="message" class="mt-3 alert"
+            [ngClass]="messageType === 'success' ? 'alert-success' : 'alert-danger'">
+            {{ message }}
+        </div>
+
+    </div>
+
+    <!-- BOOKING DETAILS MODAL -->
+    <div class="modal fade show" tabindex="-1" *ngIf="showModal"
+        style="display:block; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- HEADER -->
+                <div class="modal-header border-0 px-4 py-3 bg-dark text-white">
+                    <h4 class="modal-title fw-bold">
+                        Booking Details
+                    </h4>
+
+                    <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+                </div>
+
+                <!-- BODY -->
+                <div class="modal-body px-4 py-4" *ngIf="selectedBooking">
+
+                    <!-- HOTEL INFO -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3 text-dark">
+                            {{ selectedBooking.hotelName }}
+                        </h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <div class="border rounded-3 p-3 h-100">
+                                    <small class="text-muted d-block">
+                                        Room Type
+                                    </small>
+
+                                    <strong>
+                                        {{ selectedBooking.roomType }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="border rounded-3 p-3 h-100">
+                                    <small class="text-muted d-block">
+                                        Check-In
+                                    </small>
+
+                                    <strong>
+                                        {{ selectedBooking.checkInDate | date:'dd MMM yyyy' }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="border rounded-3 p-3 h-100">
+                                    <small class="text-muted d-block">
+                                        Check-Out
+                                    </small>
+
+                                    <strong>
+                                        {{ selectedBooking.checkOutDate | date:'dd MMM yyyy' }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3">
+
+                                <small class="text-muted d-block mb-1">
+                                    Booking Status
+                                </small>
+
+                                <span class="badge px-3 py-2" [ngClass]="{
+                                    'bg-success': selectedBooking.bookingStatus === 'Confirmed',
+                                    'bg-primary': selectedBooking.bookingStatus === 'Completed',
+                                    'bg-danger': selectedBooking.bookingStatus === 'Cancelled',
+                                    'bg-warning text-dark': selectedBooking.bookingStatus === 'Pending'
+                                }">
+                                    {{ selectedBooking.bookingStatus }}
+                                </span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded-3 p-3">
+
+                                <small class="text-muted d-block mb-1">
+                                    Payment Status
+                                </small>
+
+                                <span class="badge px-3 py-2" [ngClass]="{
+                                    'bg-success': selectedBooking.paymentStatus === 'Paid',
+                                    'bg-warning text-dark': selectedBooking.paymentStatus === 'Pending',
+                                    'bg-danger': selectedBooking.paymentStatus === 'Failed'
+                                }">
+                                    {{ selectedBooking.paymentStatus }}
+                                </span>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- GUEST INFO -->
+                    <div class="border rounded-3 p-4 mb-4">
+
+                        <h5 class="fw-bold mb-3">
+                            Guest Information
+                        </h5>
+
+                        <div class="row">
+
+                            <div class="col-md-4 mb-3">
+                                <small class="text-muted d-block">
+                                    Adults
+                                </small>
+
+                                <strong>
+                                    {{ selectedBooking.adults }}
+                                </strong>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <small class="text-muted d-block">
+                                    Children
+                                </small>
+
+                                <strong>
+                                    {{ selectedBooking.children }}
+                                </strong>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <small class="text-muted d-block">
+                                    Rooms Booked
+                                </small>
+
+                                <strong>
+                                    {{ selectedBooking.roomsBooked }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ADDRESS -->
+                    <div class="border rounded-3 p-4 mb-4">
+
+                        <h5 class="fw-bold mb-3">
+                            Hotel Address
+                        </h5>
+
+                        <p class="mb-0 text-secondary">
+                            {{ selectedBooking.addressLine1 }}
+                            {{ selectedBooking.addressLine2 }},
+                            {{ selectedBooking.city }},
+                            {{ selectedBooking.state }},
+                            {{ selectedBooking.country }}
+                            {{ selectedBooking.postalCode }}
+                        </p>
+
+                    </div>
+
+                    <!-- PRICE DETAILS -->
+                    <div class="border rounded-3 p-4 mb-4">
+
+                        <h5 class="fw-bold mb-3">
+                            Pricing Details
+                        </h5>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">
+                                    Total Nights
+                                </small>
+
+                                <strong>
+                                    {{ selectedBooking.totalNights }}
+                                </strong>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <small class="text-muted d-block">
+                                    Total Amount
+                                </small>
+
+                                <strong class="text-success fs-5">
+                                    ₹{{ selectedBooking.totalAmount }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- SPECIAL REQUEST -->
+                    <div class="border rounded-3 p-4">
+
+                        <h5 class="fw-bold mb-3">
+                            Special Request
+                        </h5>
+
+                        <p class="mb-0 text-secondary">
+                            {{ selectedBooking.specialRequest || 'No special request provided.' }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button class="btn btn-dark px-4 rounded-pill" (click)="closeModal()">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE PREVIEW MODAL -->
+    <div *ngIf="showImagePreview" class="modal fade show" style="display:block; background: rgba(0,0,0,0.7);">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-transparent border-0 text-center image-preview-modal">
+
+                <img [src]="previewImage || ('https://localhost:7094' + user.profileImage)"
+                    class="img-fluid rounded-3 shadow-lg">
+
+                <button class="btn btn-light mt-3" (click)="closeImagePreview()">
+                    Close
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="toastMessage" class="toast-box" [ngClass]="toastType === 'success' ? 'toast-success' : 'toast-error'">
+        {{ toastMessage }}
+    </div>
+</div>

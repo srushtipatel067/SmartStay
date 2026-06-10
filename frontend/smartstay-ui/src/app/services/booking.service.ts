@@ -50,6 +50,10 @@ export class BookingService {
     );
   }
 
+  getLoggedInUserBookings() {
+    return this.http.get<any>(`${this.baseUrl}/my-bookings`);
+  }
+
   cancelBooking(id: number) {
     const token = localStorage.getItem('token');
 

@@ -1,22 +1,182 @@
+.container {
+  max-width: 1180px;
+}
+
+h2 {
+  color: #111827;
+}
+
 .card {
-  border: none;
-  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08) !important;
 }
 
 .card h5 {
-  color: #475569;
-  font-size: 15px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .card h3 {
   font-weight: 700;
   margin-top: 8px;
+  color: #111827;
+}
+
+.btn {
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.btn-dark {
+  background: #111827;
+  border: none;
+}
+
+.btn-outline-dark {
+  border: 1px solid #111827;
+}
+
+.btn-outline-primary {
+  color: #111827;
+  border-color: #111827;
+}
+
+.btn-outline-primary:hover {
+  background: #111827;
+  border-color: #111827;
+  color: white;
+}
+
+.btn-danger {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: none;
+}
+
+.btn-danger:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-success {
+  background: #ecfdf5;
+  color: #047857;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #d1fae5;
+  color: #065f46;
 }
 
 .table {
-  background: #fff;
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table thead th {
+  background: #111827;
+  color: white;
+  font-weight: 600;
+  padding: 13px 12px;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 12px;
+}
+
+.table tbody tr {
+  transition: 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background: #f8fafc;
 }
 
 .badge {
-  padding: 7px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  padding: 7px 12px;
+}
+
+.badge-confirmed,
+.badge-paid {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.badge-completed {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.badge-cancelled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.badge-pending {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.form-control,
+.form-select {
+  border-radius: 10px;
+}
+
+.alert {
+  border-radius: 12px;
+}
+
+.section-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  background: #ffffff;
+  padding: 24px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.container {
+  max-width: 1180px;
+}
+
+.section-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: #ffffff;
+  padding: 24px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07);
+}
+
+.table {
+  font-size: 14px;
+}
+
+.table thead th {
+  background: #111827;
+  padding: 14px 12px;
+}
+
+.table td {
+  padding: 13px 12px;
+}
+
+.btn-sm {
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+.form-select {
+  max-width: 520px;
+}
+
+.card {
+  border-radius: 18px;
 }

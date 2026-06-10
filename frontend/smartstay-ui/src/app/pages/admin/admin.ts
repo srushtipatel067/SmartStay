@@ -20,6 +20,7 @@ export class Admin implements OnInit {
   showHotelForm = false;
   showBookings = false;
   hotelLoading = false;
+  hotelsLoading = false;
   hotelMessage = '';
   hotelMessageType: 'success' | 'error' = 'success';
 
@@ -95,6 +96,7 @@ export class Admin implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadHotelsForDropdown();
   }
 
   loadDashboard() {
@@ -121,10 +123,11 @@ export class Admin implements OnInit {
 
   loadAllBookings() {
     this.zone.run(() => {
+      this.closeAllPanels();
+
       this.bookingLoading = true;
       this.bookingView = 'all';
-      this.showHotels = false;
-      this.showHotelForm = false;
+
       this.cdr.detectChanges();
     });
 
@@ -133,15 +136,15 @@ export class Admin implements OnInit {
         const list = res?.data || res || [];
 
         this.allBookings = list.map((b: any) => ({
-          bookingId: b.BookingId,
-          guestName: b.GuestName,
-          guestEmail: b.GuestEmail,
-          hotelName: b.HotelName || b.HotelId,
-          roomType: b.RoomType || b.RoomId,
-          checkInDate: b.CheckInDate,
-          checkOutDate: b.CheckOutDate,
-          bookingStatus: b.BookingStatus,
-          paymentStatus: b.PaymentStatus
+          bookingId: b.BookingId || b.bookingId,
+          guestName: b.GuestName || b.guestName,
+          guestEmail: b.GuestEmail || b.guestEmail,
+          hotelName: b.HotelName || b.hotelName || b.HotelId || b.hotelId,
+          roomType: b.RoomType || b.roomType || b.RoomId || b.roomId,
+          checkInDate: b.CheckInDate || b.checkInDate,
+          checkOutDate: b.CheckOutDate || b.checkOutDate,
+          bookingStatus: b.BookingStatus || b.bookingStatus,
+          paymentStatus: b.PaymentStatus || b.paymentStatus
         }));
 
         this.zone.run(() => {
@@ -157,9 +160,12 @@ export class Admin implements OnInit {
   }
 
   showRecentBookings() {
-    this.bookingView = this.bookingView === 'recent' ? 'none' : 'recent';
-    this.showHotels = false;
-    this.showHotelForm = false;
+    const shouldHide = this.bookingView === 'recent';
+
+    this.closeAllPanels();
+
+    this.bookingView = shouldHide ? 'none' : 'recent';
+    this.cdr.detectChanges();
   }
 
   getCurrentBookings(): any[] {
@@ -208,12 +214,12 @@ export class Admin implements OnInit {
     });
   }
 
-
-
   // Hotel
   loadHotels() {
     this.zone.run(() => {
       this.showHotels = true;
+      this.showRooms = false;
+      this.showRoomForm = false;
       this.bookingView = 'none';
       this.showHotelForm = false;
     });
@@ -227,6 +233,23 @@ export class Admin implements OnInit {
       },
       error: (err) => {
         console.error('Hotels fetch failed', err);
+      }
+    });
+  }
+
+  loadHotelsForDropdown() {
+    this.hotelsLoading = true;
+
+    this.hotelService.getAllHotels().subscribe({
+      next: (res: any) => {
+        this.hotels = res?.data || res || [];
+        this.hotelsLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Hotels fetch failed', err);
+        this.hotels = [];
+        this.hotelsLoading = false;
       }
     });
   }
@@ -422,29 +445,19 @@ export class Admin implements OnInit {
   }
 
   openManageRooms() {
-    this.showRooms = true;
-    this.showHotels = false;
-    this.showHotelForm = false;
-    this.bookingView = 'none';
+    this.closeAllPanels();
 
+    this.showRooms = true;
     this.selectedHotelId = 0;
     this.rooms = [];
-    this.hotels = []; // reset first
-
     this.roomMessage = '';
     this.roomLoading = false;
 
-    this.hotelService.getAllHotels().subscribe({
-      next: (res: any) => {
-        this.zone.run(() => {
-          this.hotels = res?.data || res || [];
-          this.cdr.detectChanges(); // IMPORTANT
-        });
-      },
-      error: (err) => {
-        console.error('Hotels fetch failed', err);
-      }
-    });
+    if (this.hotels.length === 0) {
+      this.loadHotelsForDropdown();
+    }
+
+    this.cdr.detectChanges();
   }
 
   loadRoomsByHotel() {
@@ -579,5 +592,13 @@ export class Admin implements OnInit {
           err.error?.message || 'Failed to remove room';
       }
     });
+  }
+
+  closeAllPanels() {
+    this.showHotelForm = false;
+    this.showHotels = false;
+    this.showRooms = false;
+    this.showRoomForm = false;
+    this.bookingView = 'none';
   }
 }

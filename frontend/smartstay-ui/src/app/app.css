@@ -13,18 +13,54 @@
   cursor: pointer;
 }
 
-.links a {
-  margin-left: 20px;
-  color: #cbd5f5;
-  text-decoration: none;
+/* RIGHT SIDE */
+.links {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* ONLY this controls spacing */
 }
 
+/* LINKS */
+.links a {
+  color: #cbd5f5;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* LOGOUT BUTTON */
 .links button {
-  margin-left: 20px;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border: none;
   border-radius: 6px;
   background: #ef4444;
   color: white;
   cursor: pointer;
+  font-size: 14px;
+}
+
+/* PROFILE CIRCLE */
+.profile-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f8fafc;
+  color: #0f172a !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.profile-circle:hover {
+  background: #e2e8f0;
+}
+
+/* PROFILE IMAGE */
+.profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

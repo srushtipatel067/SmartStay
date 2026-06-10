@@ -165,20 +165,53 @@ CREATE OR ALTER PROCEDURE sp_Booking_GetByUser
 )
 AS
 BEGIN
+    SET NOCOUNT ON;
+
     -- Auto complete past bookings
     UPDATE tbl_Bookings
     SET BookingStatus = 'Completed',
         PaymentStatus = 'Paid'
     WHERE BookingStatus = 'Confirmed'
-    AND PaymentStatus = 'Paid'
-    AND CheckOutDate < CAST(GETDATE() AS DATE);
-    
-    SELECT *
-    FROM tbl_Bookings
-    WHERE UserId = @UserId
-    ORDER BY CreatedAt DESC;
-END; 
+      AND PaymentStatus = 'Paid'
+      AND CheckOutDate < CAST(GETDATE() AS DATE);
 
+    SELECT
+        b.BookingId,
+        b.UserId,
+        b.GuestName,
+        b.GuestEmail,
+        b.GuestPhone,
+
+        b.HotelId,
+        h.HotelName,
+        h.AddressLine1,
+        h.AddressLine2,
+        h.City,
+        h.State,
+        h.Country,
+        h.PostalCode,
+
+        b.RoomId,
+        r.RoomType,
+
+        b.CheckInDate,
+        b.CheckOutDate,
+        b.Adults,
+        b.Children,
+        b.RoomsBooked,
+        b.PricePerNight,
+        b.TotalNights,
+        b.TotalAmount,
+        b.SpecialRequest,
+        b.BookingStatus,
+        b.PaymentStatus,
+        b.CreatedAt
+    FROM tbl_Bookings b
+    INNER JOIN tbl_Hotels h ON b.HotelId = h.HotelId
+    INNER JOIN tbl_Rooms r ON b.RoomId = r.RoomId
+    WHERE b.UserId = @UserId
+    ORDER BY b.CreatedAt DESC;
+END;
 
 /* =========================
    SP: Get guest booking

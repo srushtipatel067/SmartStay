@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  constructor(private http: HttpClient) { }
 
   private loggedIn = new BehaviorSubject<boolean>(this.isLoggedIn());
   loggedIn$ = this.loggedIn.asObservable();
@@ -47,5 +50,15 @@ export class AuthService {
     const decoded = this.getDecodedToken();
     return decoded?.role || decoded?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || null;
   }
-}
 
+  // user profile
+  private apiUrl = 'https://localhost:7094/api/auth';
+
+  getProfile() {
+    return this.http.get<any>(`${this.apiUrl}/profile`);
+  }
+
+  updateProfile(formData: FormData) {
+    return this.http.put(`${this.apiUrl}/profile`, formData);
+  }
+}

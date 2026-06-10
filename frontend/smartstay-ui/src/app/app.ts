@@ -14,10 +14,36 @@ import { CommonModule } from '@angular/common';
 export class App {
   isLoggedIn = false;
 
-  constructor(public  auth: AuthService) { }
+  profileImageUrl: string | null = null;
+
+  constructor(public auth: AuthService) { }
+
+  getUserInitial(): string {
+    const decoded = this.auth.getDecodedToken();
+
+    const name =
+      decoded?.fullName ||
+      decoded?.name ||
+      decoded?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+
+    return name ? name.charAt(0).toUpperCase() : 'U';
+  }
 
   ngOnInit() {
     this.auth.loggedIn$.subscribe(status => {
+      if (status) {
+        this.auth.getProfile().subscribe({
+          next: (res: any) => {
+            const image = res?.data?.profileImage;
+            this.profileImageUrl = image
+              ? 'https://localhost:7094' + image
+              : null;
+          }
+        });
+      } else {
+        this.profileImageUrl = null;
+      }
+      
       this.isLoggedIn = status;
     });
   }
